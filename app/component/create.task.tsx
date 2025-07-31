@@ -40,9 +40,9 @@ export default function TaskForm() {
 
     const onSubmit = async (data: TaskFormData) => {
         try {
-
+            console.log("inside on submit");
            const res =  await dispatch(createTask(data));
-            toast.success("Task created successfully!");
+            toast(res.payload);
         } catch (error) {
             if (axios.isAxiosError(error) && error.response) {
                 const { message } = error.response.data;

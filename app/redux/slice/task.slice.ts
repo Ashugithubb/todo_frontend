@@ -2,7 +2,7 @@ import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
 import axios from 'axios';
 
 export interface Task {
-  id: number,
+  id: number;
   title: string;
   description: string;
   startTime: Date;
@@ -11,9 +11,9 @@ export interface Task {
 
 interface TaskState {
   tasks: Task[];
-  total: number,
-  page: number,
-  limit: number
+  total: number;
+  page: number;
+  limit: number;
   loading: boolean;
   error: string | null;
 }
@@ -26,32 +26,50 @@ const initialState: TaskState = {
   loading: false,
   error: null,
 };
+
+
 export interface GetTaskQuery {
   page?: number;
   limit?: number;
   title?: string;
   startTime?: string;
   endTime?: string;
+  creatorId?: number;
+  assigneeIds?: number[];
 }
+
 export const getAllTaskThunk = createAsyncThunk(
   'task/getFilteredTasks',
   async (query: GetTaskQuery, { rejectWithValue }) => {
     try {
       const response = await axios.get('http://localhost:3001/task/filter', {
         params: query,
+        
+        paramsSerializer: (params) => {
+          const searchParams = new URLSearchParams();
+          Object.entries(params).forEach(([key, value]) => {
+            if (Array.isArray(value)) {
+              value.forEach((v) => searchParams.append(key, String(v)));
+            } else if (value !== undefined) {
+              searchParams.append(key, String(value));
+            }
+          });
+          return searchParams.toString();
+        },
       });
-      console.log(response.data);
       return response.data;
     } catch (error: any) {
       return rejectWithValue(error.response?.data?.message || 'Failed to fetch tasks');
     }
   }
 );
-const recipeSlice = createSlice({
+
+
+const taskSlice = createSlice({
   name: 'task',
   initialState,
   reducers: {
-    clearRecipes: (state) => {
+    clearTasks: (state) => {
       state.tasks = [];
       state.error = null;
     },
@@ -84,9 +102,9 @@ const recipeSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       });
-},
+  },
 });
 
-export const { clearRecipes } = recipeSlice.actions;
+export const { clearTasks } = taskSlice.actions;
 
-export default recipeSlice.reducer;
+export default taskSlice.reducer;
