@@ -59,7 +59,7 @@ const Navbar: React.FC = () => {
 
         <Box flexGrow={1} />
 
-        {/* Notification Bell + Avatar */}
+  
         <Box sx={{ display: "flex", gap: 2 }}>
           {!email ? (
             <Button onClick={handelLoginClick} variant="contained">
