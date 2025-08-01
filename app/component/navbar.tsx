@@ -1,4 +1,4 @@
-'use client'; // Add this if you're using any client-side hooks (like MUI or interactivity)
+'use client'; 
 import React, { useEffect } from 'react';
 import AppBar from '@mui/material/AppBar';
 import Toolbar from '@mui/material/Toolbar';
